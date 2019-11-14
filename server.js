@@ -13,6 +13,7 @@ const hpp = require("hpp");
 const cors = require("cors");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
+const socket = require("./utils/socket");
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -21,7 +22,7 @@ dotenv.config({ path: "./config/config.env" });
 connectDB();
 
 // Route files
-const consorcios = require("./routes/consorcios");
+const chats = require("./routes/chats");
 
 const app = express();
 
@@ -55,7 +56,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
 // // Mount routers
-app.use("/api/v1/consorcios", consorcios);
+app.use("/api/v1/chats", chats);
 
 // app.use(errorHandler);
 
@@ -68,6 +69,9 @@ const server = app.listen(
       .bold
   )
 );
+
+//hook sockets
+socket.listen(server);
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
