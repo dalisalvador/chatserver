@@ -1,5 +1,6 @@
 const socketio = require("socket.io");
 const socketioJwt = require("socketio-jwt");
+const Chat = require("../models/Chat");
 
 module.exports.listen = function(app) {
   var io = socketio.listen(app);
@@ -14,7 +15,14 @@ module.exports.listen = function(app) {
     console.log(
       "connected & authenticated: " + JSON.stringify(socket.decoded_token)
     );
-    socket.emit("authenticated", { fede: "capo" });
+
+    socket.on("message", message => {
+      // const chat = Chat.find()
+      socket.emit("res", {
+        success: false,
+        message
+      });
+    });
 
     // socket.on("sensor", function(msg) {
     //   var userData = socket.decoded_token;
