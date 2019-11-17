@@ -15,22 +15,24 @@ exports.createChat = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc      Get all clientes
-// @route     GET /api/v1/clientes
+// @desc      Get all chats from user
+// @route     GET /api/v1/chats/:id
 // @access    Public
-// exports.getClientes = asyncHandler(async (req, res, next) => {
-//   const clientes = await Cliente.find({}).populate({
-//     path: "unidadesFuncionales",
-//     model: "UnidadFuncional",
-//     populate: {
-//       path: "consorcio",
-//       model: "Consorcio",
-//       select: ["nombre"]
-//     }
-//   });
-//   if (!clientes) {
-//     return next(new ErrorResponse("No se encontraron clientes", 404));
-//   }
+exports.getChats = asyncHandler(async (req, res, next) => {
+  const chats = await Chat.find({
+    $or: [{ userA: req.user.id }, { userB: req.user.id }]
+  });
 
-//   res.status(200).json({ success: true, data: clientes });
-// });
+  if (chats.length === 0) {
+    return next(new ErrorResponse("No se encontraron chats", 404));
+  }
+
+  //limit Number of messages to 20
+  chats.forEach(chat => {
+    if (chat.messages.length > process.env.MESSAGES_LIMIT) {
+      chat.messages = [...chat.messages.slice(-process.env.MESSAGES_LIMIT)];
+    }
+  });
+
+  res.status(200).json({ success: true, chats });
+});

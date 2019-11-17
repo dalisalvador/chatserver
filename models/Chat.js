@@ -1,19 +1,27 @@
 const mongoose = require("mongoose");
 
 const ChatSchema = new mongoose.Schema({
-  message: [
+  userA: {
+    type: mongoose.Schema.ObjectId,
+    require: true
+  },
+  userB: {
+    type: mongoose.Schema.ObjectId,
+    require: true
+  },
+  messages: [
     {
-      senderId: {
-        type: mongoose.Schema.ObjectId,
-        require: true
-      },
-      receiverId: {
+      from: {
         type: mongoose.Schema.ObjectId,
         require: true
       },
       message: {
         type: String,
         require: true
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now
       }
     }
   ],

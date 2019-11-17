@@ -1,6 +1,7 @@
 const express = require("express");
 const {
-  createChat
+  createChat,
+  getChats
   //   addMessage,
   //   getMessages,
 } = require("../controllers/chats");
@@ -8,7 +9,13 @@ const {
 const Chat = require("../models/Chat");
 const router = express.Router();
 
+const { protect, authorize } = require("../middleware/auth");
+
+//Protect ALL routes
+router.use(protect);
+
 router.route("/").post(createChat);
+router.route("/").get(getChats);
 
 // router
 //   .route("/:id")

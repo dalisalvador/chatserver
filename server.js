@@ -58,7 +58,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // // Mount routers
 app.use("/api/v1/chats", chats);
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 
