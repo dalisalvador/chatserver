@@ -13,7 +13,7 @@ const hpp = require("hpp");
 const cors = require("cors");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
-const socket = require("./utils/socket");
+const socket = require("./socket");
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });

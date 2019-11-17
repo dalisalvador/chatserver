@@ -9,7 +9,7 @@ const {
 const Chat = require("../models/Chat");
 const router = express.Router();
 
-const { protect, authorize } = require("../middleware/auth");
+const { protect } = require("../middleware/auth");
 
 //Protect ALL routes
 router.use(protect);
