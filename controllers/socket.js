@@ -6,31 +6,35 @@ exports.onMessage = async (data, socket) => {
 
   let chat = await Chat.findOne({
     $or: [
-      { $and: [{ userA: data.from }, { userB: data.to }] },
-      { $and: [{ userA: data.to }, { userB: data.from }] }
+      { $and: [{ "userA.userId": data.from }, { "userB.userId": data.to }] },
+      { $and: [{ "userA.userId": data.to }, { "userB.userId": data.from }] }
     ]
   });
   if (!chat) {
     //No chats yet. Create a newone.
     chat = await Chat.create({
-      userA: data.from,
-      userB: data.to,
+      "userA.userId": data.from,
+      "userB.userId": data.to,
       messages: [{ from: data.from, message: data.message }]
     });
     chat = await Chat.findOne({
-      $and: [{ userA: data.from }, { userB: data.to }]
+      $and: [{ "userA.userId": data.from }, { "userB.userId": data.to }]
     });
 
     if (socketTo) {
       socket.to(`${socketTo.socketId}`).emit("new-chat", {
         success: true,
-        chat
+        chat,
+        from: data.from,
+        to: data.to
       });
     }
     //If the user has never connected socketTo does not exists yet.
     socket.emit("new-chat", {
       success: true,
-      chat
+      chat,
+      from: data.from,
+      to: data.to
     });
   } else {
     chat.messages.push({ from: data.from, message: data.message });
@@ -39,13 +43,17 @@ exports.onMessage = async (data, socket) => {
       socket.to(`${socketTo.socketId}`).emit("new-message", {
         success: true,
         message: chat.messages.slice(-1)[0],
-        chatId: chat._id
+        chatId: chat._id,
+        from: data.from,
+        to: data.to
       });
     }
     socket.emit("new-message", {
       success: true,
       message: chat.messages.slice(-1)[0],
-      chatId: chat._id
+      chatId: chat._id,
+      from: data.from,
+      to: data.to
     });
   }
 };

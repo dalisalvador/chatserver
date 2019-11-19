@@ -1,6 +1,7 @@
 const socketio = require("socket.io");
 const socketioJwt = require("socketio-jwt");
 const { onMessage, updateSocketToUser } = require("./controllers/socket");
+const { updateUserConnection } = require("./controllers/chats");
 
 module.exports.listen = function(app) {
   var io = socketio.listen(app);
@@ -17,6 +18,9 @@ module.exports.listen = function(app) {
 
     //New message?
     socket.on("message", data => onMessage(data, socket));
+    socket.on("connected", () => updateUserConnection(socket, true));
+    socket.on("disconnect", () => updateUserConnection(socket, false));
+    socket.on("disconnect-user", () => updateUserConnection(socket, false));
   });
 
   return io;
