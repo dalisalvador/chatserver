@@ -17,8 +17,4 @@ router.use(protect);
 router.route("/").post(createChat);
 router.route("/").get(getChats);
 
-// router
-//   .route("/:id")
-//   .post(addMessage);
-
 module.exports = router;

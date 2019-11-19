@@ -1,14 +1,8 @@
 const mongoose = require("mongoose");
 
 const ChatSchema = new mongoose.Schema({
-  userA: {
-    userId: { type: mongoose.Schema.ObjectId, require: true },
-    isConnected: { type: Boolean, default: false }
-  },
-  userB: {
-    userId: { type: mongoose.Schema.ObjectId, require: true },
-    isConnected: { type: Boolean, default: false }
-  },
+  userA: { type: mongoose.Schema.ObjectId, require: true },
+  userB: { type: mongoose.Schema.ObjectId, require: true },
   messages: [
     {
       from: {

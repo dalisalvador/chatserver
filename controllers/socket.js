@@ -3,22 +3,21 @@ const SocketToUser = require("../models/SocketToUser");
 
 exports.onMessage = async (data, socket) => {
   let socketTo = await SocketToUser.findOne({ userId: data.to });
-
   let chat = await Chat.findOne({
     $or: [
-      { $and: [{ "userA.userId": data.from }, { "userB.userId": data.to }] },
-      { $and: [{ "userA.userId": data.to }, { "userB.userId": data.from }] }
+      { $and: [{ userA: data.from }, { userB: data.to }] },
+      { $and: [{ userA: data.to }, { userB: data.from }] }
     ]
   });
   if (!chat) {
     //No chats yet. Create a newone.
     chat = await Chat.create({
-      "userA.userId": data.from,
-      "userB.userId": data.to,
+      userA: data.from,
+      userB: data.to,
       messages: [{ from: data.from, message: data.message }]
     });
     chat = await Chat.findOne({
-      $and: [{ "userA.userId": data.from }, { "userB.userId": data.to }]
+      $and: [{ userA: data.from }, { userB: data.to }]
     });
 
     if (socketTo) {
@@ -36,6 +35,7 @@ exports.onMessage = async (data, socket) => {
       from: data.from,
       to: data.to
     });
+    console.log(`New Chat from user ${data.from} to user ${data.to}`.cyan);
   } else {
     chat.messages.push({ from: data.from, message: data.message });
     chat = await chat.save();
@@ -55,6 +55,7 @@ exports.onMessage = async (data, socket) => {
       from: data.from,
       to: data.to
     });
+    console.log(`New Message from user ${data.from} to user ${data.to}`.cyan);
   }
 };
 
