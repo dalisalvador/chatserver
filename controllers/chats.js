@@ -21,7 +21,7 @@ exports.createChat = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.getChats = asyncHandler(async (req, res) => {
   const chats = await Chat.find({
-    $or: [{ "userA.userId": req.user.id }, { "userB.userId": req.user.id }]
+    $or: [{ userA: req.user.id }, { userB: req.user.id }]
   });
 
   if (chats.length > 0) {
